@@ -1,0 +1,96 @@
+ue()
+{
+   for FILE in "$@"; do
+      if [ ! -e "$FILE" ]; then
+        touch "$FILE"
+      fi
+   done
+   open -a "UltraEdit" "$@"
+}
+
+projdir()
+{
+cd ~/Projects/$1
+}
+
+function killbyname(){
+	for X in `ps acx | grep -i $1 | awk {'print $1'}`
+		do
+  			kill $X;
+		done
+}
+
+# Prompt function because PROMPT_COMMAND is awesome
+function set_prompt() {
+    # show the host only and be done with it.
+    host="${UC}${HD}${NIL}"
+
+    # Special vim-tab-like shortpath (~/folder/directory/foo => ~/f/d/foo)
+    _pwd=`pwd | sed "s#$HOME#~#"`
+    if [[ $_pwd == "~" ]]; then
+       _dirname=$_pwd
+    else
+       _dirname=`dirname "$_pwd" `
+        if [[ $_dirname == "/" ]]; then
+              _dirname=""
+        fi
+       _dirname="$_dirname/`basename "$_pwd"`"
+    fi
+    path="${LC}${_dirname}${NIL}"
+    myuser="${UC}\u${NIL}"
+
+    # Dirtiness from:
+    # http://henrik.nyh.se/2008/12/git-dirty-prompt#comment-8325834
+    if git update-index -q --refresh 2>/dev/null; git diff-index --quiet --cached HEAD --ignore-submodules -- 2>/dev/null && git diff-files --quiet --ignore-submodules 2>/dev/null
+        then dirty="${PURPLE} ✅ ${NIL}"
+    else
+       dirty="${RED} ⛔ ${NIL}"
+    fi
+    _branch=$(git symbolic-ref HEAD 2>/dev/null)
+    _branch=${_branch#refs/heads/} # apparently faster than sed
+    branch="" # need this to clear it when we leave a repo
+    if [[ -n $_branch ]]; then
+       branch="${NIL}[${PURPLE}${_branch}${dirty}${NIL}] "
+    fi
+
+    # Dollar/pound sign
+    end="${LC}\$${NIL} "
+
+    # Virtual Env
+    if [[ $VIRTUAL_ENV != "" ]]
+       then
+           venv="(venv: ${RED}${VIRTUAL_ENV##*/}${NIL}) "
+    else
+       venv=''
+    fi
+
+    export PS1="${myuser} on ${host} at ${YELLOW}\t${NIL}\n${venv}${branch}\n${path} ${end}"
+}
+
+export PROMPT_COMMAND=set_prompt
+
+function tab () {
+    local cmd=""
+    local cdto="$PWD"
+    local args="$@"
+ 
+    if [ -d "$1" ]; then
+        cdto=`cd "$1"; pwd`
+        args="${@:2}"
+    fi
+ 
+    if [ -n "$args" ]; then
+        cmd="; $args"
+    fi
+ 
+    osascript &>/dev/null <<EOF
+        tell application "iTerm"
+            tell current terminal
+                launch session "Default Session"
+                tell the last session
+                    write text "cd \"$cdto\"$cmd"
+                end tell
+            end tell
+        end tell
+EOF
+}
