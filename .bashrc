@@ -24,5 +24,5 @@ UC=$GREEN
 LC=$CYAN
 HD=$SHORT
 
-source ~/.functions
-source ~/.aliases
+source .functions
+source .aliases
