@@ -1,6 +1,7 @@
 alias rm=trash
 alias ll='gls -la --color=auto'
 alias ls='gls --color=auto'
+alias cat='bat'
 alias p=projdir
 alias phpserver='/usr/local/bin/php -S localhost:8000'
 alias pkill=killbyname
