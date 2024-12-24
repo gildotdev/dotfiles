@@ -1,11 +1,5 @@
-alias rm=trash
-alias ll='gls -la --color=auto'
-alias ls='gls --color=auto'
+alias ll='ls -laG'
 alias cat='bat'
+alias rm='trash'
 alias p=projdir
-alias phpserver='/usr/local/bin/php -S localhost:8000'
 alias pkill=killbyname
-alias fixopenwith='/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user'
-
-## Look at node alternative
-## alias ppj='cat $1 | /Users/gilcreque/.pythonbrew/pythons/Python-2.7/bin/python -mjson.tool | /usr/local/bin/pygmentize -l javascript'
